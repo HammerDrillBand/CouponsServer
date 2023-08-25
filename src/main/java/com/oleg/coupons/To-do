@@ -1,0 +1,23 @@
+Annotations and URL variables in controllers - Done
+Create constructors converting DTO to Entity and vice-versa (19/05/2023) - Done
+Correct @Query statements to return DTO objects (19/05/2023) per IProductsDal in supermarket - Done
+Getters, setters & default constructors in DTO and Entity - Done
+reduceAmount after purchase completed - Done
+getAllCompaniesByType - Done
+Create SQL statements from mock-data - Done
+Make sold-out coupons unavailable - Done
+CORS filter - Done
+Exception Handler - Done
+Decode token - Done in class. See next item
+Update JWTUtils with new functions - Done
+cascade & fetch - Done. FetchTypes per defaults (LAZY for "ToMany" and EAGER for "ToOne")
+Switch all exceptions in the logic to ApplicationException (if) - Done
+Mock purchases still missing - Done
+Reorder logic functions (create, update, delete, get all, get by id, other get, isExist) - Done
+Use decrypted token in new purchase per example from Itay - Done
+change mock data to suit new concept - Done
+Make expired coupons unavailable - Need to add validation if available before purchase and make timer task - Done
+Correct validations (Less comms with DB) - Done
+Validate amount different for new purchase and updated purchase. - Done
+Change function names to "getById" and "getAll" and other shorter names - Done
+Make all "add" functions return only ID to controller, and the controller returns int - done

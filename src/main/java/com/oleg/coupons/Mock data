@@ -1,0 +1,163 @@
+Categories:
+{
+    "name": "Home recording"
+}
+{
+    "name": "Stage gear"
+}
+{
+    "name": "Musical instruments"
+}
+
+Companies:
+{
+    "name": "Kley Zemer",
+    "companyType": "CORPORATION",
+    "registryNumber": 511234567,
+    "address": "Tel Aviv",
+    "contactEmail": "contact@kley-zemer.co.il"
+}
+{
+    "name": "Halilit",
+    "companyType": "LLC",
+    "registryNumber": 517654321,
+    "address": "Jaffa",
+    "contactEmail": "info@halilit.co.il"
+}
+{
+    "name": "Marom",
+    "companyType": "PARTNERSHIP",
+    "registryNumber": 512222222,
+    "address": "Ramat Gan",
+    "contactEmail": "maromks@marom-music.com"
+}
+{
+    "name": "Wild Guitars",
+    "companyType": "PRIVATE_OWNERSHIP",
+    "registryNumber": 510555666,
+    "address": "Ramat HaSharon",
+    "contactEmail": "info@wildguitars.co.il"
+}
+{
+    "name": "Music Center",
+    "companyType": "LLC",
+    "registryNumber": 510123456,
+    "address": "Rishon Lezion",
+    "contactEmail": "service@music-center.co.il"
+}
+
+Coupons:
+//Wild Guitars
+{
+  "name": "Ampeg celebration",
+  "description": "Get a 500NIS discount on one of all Ampeg Bass amplifiers",
+  "startDate": "2023-05-22",
+  "endDate": "2024-05-22",
+  "price": 350,
+  "amount": 20,
+  "categoryId": 2,
+  "isAvailable": true
+}
+//Music Center
+{
+  "name": "Studio monitors sale",
+  "description": "We're clearing the display and you get 20% for all studio monitors currently on display",
+  "startDate": "2022-01-01",
+  "endDate": "2024-12-31",
+  "price": 50,
+  "amount": 150,
+  "categoryId": 1,
+  "isAvailable": true
+}
+//Kley Zemer
+{
+  "name": "Fender guitars lottery",
+  "description": "Buy a chance to get a Fender Telecaster from the American Custom Shop",
+  "startDate": "2023-05-01",
+  "endDate": "2023-12-31",
+  "price": 10,
+  "amount": 500,
+  "categoryId": 3,
+  "isAvailable": true
+}
+
+Users:
+{
+    "username": "customer@hotmail.com",
+    "password": "customeR123456",
+    "userType": "CUSTOMER"
+}
+{
+    "username": "oleg@themusediscounts.com",
+    "password": "Admin666",
+    "userType": "ADMIN"
+}
+{
+    "username": "oleg@kley-zemer.co.il",
+    "password": "D0ntBuyFr0mUs",
+    "userType": "COMPANY",
+    "companyId": "1"
+}
+{
+    "username": "oleg@halilit.co.il",
+    "password": "SpectorEuroLX5",
+    "userType": "COMPANY",
+    "companyId": "2"
+}
+{
+    "username": "oleg@marom-music.com",
+    "password": "Whydoweexist2023",
+    "userType": "COMPANY",
+    "companyId": "3"
+}
+{
+    "username": "oleg@wildguitars.co.il",
+    "password": "FollowTheLeader1998",
+    "userType": "COMPANY",
+    "companyId": "4"
+}
+{
+    "username": "oleg@music-center.co.il",
+    "password": "TheWarwickGuys123",
+    "userType": "COMPANY",
+    "companyId": "5"
+}
+
+Purchases:
+{
+    "couponId": "2",
+    "amount": "2"
+}
+{
+    "couponId": "3",
+    "amount": "3"
+}
+{
+    "couponId": "2",
+    "amount": "5"
+}
+
+SQL Statements:
+INSERT INTO coupons.categories (name) VALUES ("Home recording");
+INSERT INTO coupons.categories (name) VALUES ("Stage gear");
+INSERT INTO coupons.categories (name) VALUES ("Musical instruments");
+INSERT INTO coupons.companies (name, company_type, registry_number, address, contact_email) VALUES ("Kley Zemer", "CORPORATION", 511234567, "Tel Aviv", "contact@kley-zemer.co.il");
+INSERT INTO coupons.companies (name, company_type, registry_number, address, contact_email) VALUES ("Halilit", "LLC", 517654321, "Jaffa", "info@halilit.co.il");
+INSERT INTO coupons.companies (name, company_type, registry_number, address, contact_email) VALUES ("Marom", "PARTNERSHIP", 512222222, "Ramat Gan", "maromks@marom-muisc.com");
+INSERT INTO coupons.companies (name, company_type, registry_number, address, contact_email) VALUES ("Wild Guitars", "PRIVATE_OWNERSHIP", 510555666, "Ramat HaSharon", "info@wildguitars.co.il");
+INSERT INTO coupons.companies (name, company_type, registry_number, address, contact_email) VALUES ("Music Center", "LLC", 510123456, "Rishon Lezion", "service@music-center.co.il");
+
+INSERT INTO coupons.coupons (name, description, start_date, end_date, price, amount, category_id, company_id, is_available) VALUES ("Ampeg celebration", "Get a 500NIS discount on one of all Ampeg Bass amplifiers", "2023-05-22", "2024-05-22", 350, 20, 2, 4, true);
+INSERT INTO coupons.coupons (name, description, start_date, end_date, price, amount, category_id, company_id, is_available) VALUES ("Studio monitors sale", "We're clearing the display and you get 20% for all studio monitors currently on display", "2022-01-01", "2024-12-31", 50, 150, 1, 5, true);
+INSERT INTO coupons.coupons (name, description, start_date, end_date, price, amount, category_id, company_id, is_available) VALUES ("Fender guitars lottery", "Buy a chance to get a Fender Telecaster from the American Custom Shop", "2023-05-01", "2023-12-31", 10, 500, 3, 1, true);
+INSERT INTO coupons.users (username, password, user_type) VALUES ("customer@hotmail.com", "customeR123456", "CUSTOMER");
+INSERT INTO coupons.users (username, password, user_type) VALUES ("oleg@themusediscounts.com", "Admin666", "ADMIN");
+INSERT INTO coupons.users (username, password, user_type, company_id) VALUES ("oleg@kley-zemer.co.il", "D0ntBuyFr0mUs", "COMPANY", 1);
+INSERT INTO coupons.users (username, password, user_type, company_id) VALUES ("oleg@halilit.co.il", "SpectorEuroLX5", "COMPANY", 2);
+INSERT INTO coupons.users (username, password, user_type, company_id) VALUES ("oleg@marom-music.com", "Whydoweexist2023", "COMPANY", 3);
+INSERT INTO coupons.users (username, password, user_type, company_id) VALUES ("oleg@wildguitars.co.il", "FollowTheLeader1998", "COMPANY", 4);
+INSERT INTO coupons.users (username, password, user_type, company_id) VALUES ("oleg@music-center.co.il", "TheWarwickGuys123", "COMPANY", 5);
+INSERT INTO coupons.purchases(coupon_id, amount) VALUES (2, 2);
+INSERT INTO coupons.purchases(coupon_id, amount) VALUES (3, 3);
+INSERT INTO coupons.purchases(coupon_id, amount) VALUES (2, 5);
+
