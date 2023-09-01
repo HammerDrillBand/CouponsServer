@@ -141,7 +141,7 @@ public class CouponLogic {
     }
 
     private void validateCouponAmount(Coupon coupon) throws ApplicationException {
-        if (coupon.getAmount() < 1) {
+        if (coupon.getAmount() < 0) {
             coupon.setAvailable(false);
             throw new ApplicationException(ErrorType.COUPON_AMOUNT_INVALID);
         }

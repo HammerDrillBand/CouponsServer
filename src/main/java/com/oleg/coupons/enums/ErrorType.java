@@ -31,7 +31,7 @@ public enum ErrorType {
     COMPANY_NAME_TOO_SHORT(835, "The company name entered is too short", false),
     COMPANY_EMAIL_INVALID(836, "The company contact email entered is invalid", false),
 
-    PURCHASE_AMOUNT_NOT_VALID(840, "Purchase amount cannot be positive and smaller than the available amount", false),
+    PURCHASE_AMOUNT_NOT_VALID(840, "Purchase amount cannot be negative or larger than the available amount", false),
     PURCHASE_DATE_BEFORE_COUPON_START_DATE(841, "The purchase date cannot be before the coupon start date", false),
     PURCHASE_DATE_AFTER_COUPON_END_DATE(842, "The purchase date cannot be after the coupon end date", false),
     DECREASED_AMOUNT_IS_TOO_LARGE(843, "The amount you required to reduce from the coupon is too large", false),
