@@ -36,6 +36,14 @@ public class CouponEntity {
     @Column(name = "is_available", nullable = false)
     private boolean isAvailable;
 
+//    @Lob
+//    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = true)
+//    private Blob imageBlob;
+
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = true)
+    private byte[] imageData;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private CategoryEntity category;
 
@@ -63,6 +71,8 @@ public class CouponEntity {
         this.company = new CompanyEntity();
         int companyId = coupon.getCompanyId();
         this.company.setId(companyId);
+//        this.imageBlob = coupon.getImageBlob();
+        this.imageData = coupon.getImageData();
     }
 
     public int getId() {
@@ -143,6 +153,22 @@ public class CouponEntity {
 
     public void setCompany(CompanyEntity company) {
         this.company = company;
+    }
+
+//    public Blob imageBlob() {
+//        return imageBlob;
+//    }
+//
+//    public void imageBlob(Blob imageBlob) {
+//        this.imageBlob = imageBlob;
+//    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 
     public List<PurchaseEntity> getPurchasesList() {

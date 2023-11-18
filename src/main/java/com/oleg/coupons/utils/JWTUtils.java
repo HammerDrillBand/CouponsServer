@@ -40,7 +40,7 @@ public class JWTUtils {
     }
 
     public static String createJWT(String subject) {
-        return createJWT("0", "Avi", subject, 0);
+        return createJWT("0", "Oleg", subject, 0);
     }
 
     private static String createJWT(String id, String issuer, String subject, long ttlMillis) {
