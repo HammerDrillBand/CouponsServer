@@ -3,6 +3,7 @@ package com.oleg.coupons.controllers;
 import com.oleg.coupons.dto.Coupon;
 import com.oleg.coupons.dto.CouponToClient;
 import com.oleg.coupons.dto.SuccessfulLoginDetails;
+import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.CouponLogic;
 import com.oleg.coupons.utils.JWTUtils;
@@ -32,7 +33,10 @@ public class CouponsController {
     @PutMapping
     public void updateCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) throws Exception {
         SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
-        coupon.setCompanyId(successfulLoginDetails.getCompanyId());
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType == UserType.COMPANY) {
+            coupon.setCompanyId(successfulLoginDetails.getCompanyId());
+        }
         this.couponLogic.updateCoupon(coupon);
     }
 

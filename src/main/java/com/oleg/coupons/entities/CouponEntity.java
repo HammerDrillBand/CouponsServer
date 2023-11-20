@@ -36,10 +36,6 @@ public class CouponEntity {
     @Column(name = "is_available", nullable = false)
     private boolean isAvailable;
 
-//    @Lob
-//    @Column(name = "image", columnDefinition = "LONGBLOB", nullable = true)
-//    private Blob imageBlob;
-
     @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB", nullable = true)
     private byte[] imageData;
@@ -64,14 +60,13 @@ public class CouponEntity {
         this.endDate = coupon.getEndDate();
         this.price = coupon.getPrice();
         this.amount = coupon.getAmount();
-        this.isAvailable = true;
+        this.isAvailable = coupon.isAvailable();
         this.category = new CategoryEntity();
         int categoryId = coupon.getCategoryId();
         this.category.setId(categoryId);
         this.company = new CompanyEntity();
         int companyId = coupon.getCompanyId();
         this.company.setId(companyId);
-//        this.imageBlob = coupon.getImageBlob();
         this.imageData = coupon.getImageData();
     }
 
@@ -135,8 +130,8 @@ public class CouponEntity {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
-        isAvailable = available;
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     public CategoryEntity getCategory() {
@@ -154,14 +149,6 @@ public class CouponEntity {
     public void setCompany(CompanyEntity company) {
         this.company = company;
     }
-
-//    public Blob imageBlob() {
-//        return imageBlob;
-//    }
-//
-//    public void imageBlob(Blob imageBlob) {
-//        this.imageBlob = imageBlob;
-//    }
 
     public byte[] getImageData() {
         return imageData;

@@ -166,7 +166,7 @@ public class CouponLogic {
 
     private void validateCouponAmount(Coupon coupon) throws ApplicationException {
         if (coupon.getAmount() < 0) {
-            coupon.setAvailable(false);
+            coupon.setIsAvailable(false);
             throw new ApplicationException(ErrorType.COUPON_AMOUNT_INVALID);
         }
     }
@@ -210,7 +210,7 @@ public class CouponLogic {
         List<CouponEntity> expiredCoupons = this.couponsDal.getExpiredCoupons();
 
         for (int i = 0; i < expiredCoupons.size(); i++) {
-            expiredCoupons.get(i).setAvailable(false);
+            expiredCoupons.get(i).setIsAvailable(false);
             couponsDal.save(expiredCoupons.get((i)));
         }
     }

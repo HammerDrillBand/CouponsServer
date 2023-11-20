@@ -10,8 +10,8 @@ public class CouponToClient extends Coupon {
     public CouponToClient() {
     }
 
-    public CouponToClient(int id, String name, String description, Date startDate, Date endDate, int amount, float price, int categoryId, String categoryName, int companyId, String companyName, byte[] imageData) {
-        super(id, name, description, startDate, endDate, price, amount, categoryId, companyId, imageData);
+    public CouponToClient(int id, String name, String description, Date startDate, Date endDate, int amount, float price, int categoryId, String categoryName, int companyId, String companyName, boolean isAvailable, byte[] imageData) {
+        super(id, name, description, startDate, endDate, price, amount, categoryId, companyId, isAvailable, imageData);
         this.categoryName = categoryName;
         this.companyName = companyName;
     }

@@ -173,7 +173,7 @@ public class PurchaseLogic {
         CouponToClient coupon = this.couponLogic.getById(couponId);
         int newAmount = coupon.getAmount() - purchasedAmount;
         if (newAmount == 0) {
-            coupon.setAvailable(false);
+            coupon.setIsAvailable(false);
         } else if (newAmount < 0) {
             throw new ApplicationException(ErrorType.DECREASED_AMOUNT_IS_TOO_LARGE);
         }
