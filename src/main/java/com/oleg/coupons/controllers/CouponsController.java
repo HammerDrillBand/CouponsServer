@@ -47,7 +47,9 @@ public class CouponsController {
 
     @GetMapping
     public List<CouponToClient> getAllCoupons() throws ApplicationException {
-        return this.couponLogic.getAll();
+        List<CouponToClient> allCoupons = this.couponLogic.getAll();
+        return allCoupons;
+//        return this.couponLogic.getAll();
     }
 
     @GetMapping("/{id}")
