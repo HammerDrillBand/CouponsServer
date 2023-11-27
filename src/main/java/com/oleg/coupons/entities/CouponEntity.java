@@ -60,7 +60,7 @@ public class CouponEntity {
         this.endDate = coupon.getEndDate();
         this.price = coupon.getPrice();
         this.amount = coupon.getAmount();
-        this.isAvailable = coupon.isAvailable();
+        this.isAvailable = coupon.getIsAvailable();
         this.category = new CategoryEntity();
         int categoryId = coupon.getCategoryId();
         this.category.setId(categoryId);

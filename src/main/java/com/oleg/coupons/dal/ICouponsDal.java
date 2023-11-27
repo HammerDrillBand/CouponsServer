@@ -28,6 +28,9 @@ public interface ICouponsDal extends CrudRepository<CouponEntity, Integer> {
     @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.category.name = :categoryName")
     List<CouponToClient> getByCategoryName(@Param("categoryName") String categoryName);
 
+    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.isAvailable = true")
+    List<CouponToClient> getAllAvailable();
+
     @Query("FROM CouponEntity c WHERE c.endDate < current_date()")
     List<CouponEntity> getExpiredCoupons();
 

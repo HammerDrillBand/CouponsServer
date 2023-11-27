@@ -46,7 +46,7 @@ public class Coupon {
         this.amount = couponToClient.getAmount();
         this.categoryId = couponToClient.getCategoryId();
         this.companyId = couponToClient.getCompanyId();
-        this.isAvailable = couponToClient.isAvailable();
+        this.isAvailable = couponToClient.getIsAvailable();
         this.imageData = couponToClient.getImageData();
     }
 
@@ -122,7 +122,7 @@ public class Coupon {
         this.companyId = companyId;
     }
 
-    public boolean isAvailable() {
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 

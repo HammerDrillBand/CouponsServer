@@ -32,9 +32,6 @@ public class CouponLogic {
         validateCoupon(coupon);
         CouponEntity couponEntity = new CouponEntity(coupon);
 
-//        Blob imageBlob = byteArrayToBlob(coupon.getImageData());
-//        couponEntity.imageBlob(imageBlob);
-
         try {
             couponEntity = this.couponsDal.save(couponEntity);
         } catch (Exception e) {
@@ -47,8 +44,6 @@ public class CouponLogic {
         validateCoupon(coupon);
         CouponEntity couponEntity = new CouponEntity(coupon);
 
-//        Blob imageBlob = byteArrayToBlob(coupon.getImageData());
-//        couponEntity.imageBlob(imageBlob);
 
         try {
             this.couponsDal.save(couponEntity);
@@ -73,7 +68,6 @@ public class CouponLogic {
         if (coupon == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupon you were looking for");
         }
-//        coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
         return coupon;
     }
 
@@ -82,9 +76,6 @@ public class CouponLogic {
         if (coupons == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
         }
-//        for (CouponToClient coupon : coupons) {
-//            coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
-//        }
         return coupons;
     }
 
@@ -93,9 +84,6 @@ public class CouponLogic {
         if (coupons == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
         }
-//        for (CouponToClient coupon : coupons) {
-//            coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
-//        }
         return coupons;
     }
 
@@ -104,9 +92,6 @@ public class CouponLogic {
         if (coupons == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
         }
-//        for (CouponToClient coupon : coupons) {
-//            coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
-//        }
         return coupons;
     }
 
@@ -115,9 +100,6 @@ public class CouponLogic {
         if (coupons == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
         }
-//        for (CouponToClient coupon : coupons) {
-//            coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
-//        }
         return coupons;
     }
 
@@ -126,9 +108,14 @@ public class CouponLogic {
         if (coupons == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
         }
-//        for (CouponToClient coupon : coupons) {
-//            coupon.setImageData(blobToByteArray(coupon.getImageBlob()));
-//        }
+        return coupons;
+    }
+
+    public List<CouponToClient> getAllAvailable() throws ApplicationException {
+        List<CouponToClient> coupons = this.couponsDal.getAllAvailable();
+        if (coupons == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "There are currently no available coupons");
+        }
         return coupons;
     }
 
@@ -214,29 +201,5 @@ public class CouponLogic {
             couponsDal.save(expiredCoupons.get((i)));
         }
     }
-
-//    public Blob byteArrayToBlob(byte[] byteArray) throws ApplicationException {
-//        try{
-//            if (byteArray != null) {
-//                return new SerialBlob(byteArray);
-//            }
-//            return null;
-//        } catch (SQLException e){
-//            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to convert byte array to Blob", e);
-//        }
-//    }
-//
-//    public byte[] blobToByteArray(Blob imageBlob) throws ApplicationException {
-//        try {
-//            if (imageBlob != null) {
-//                int blobLength = (int) imageBlob.length();
-//                return imageBlob.getBytes(1, blobLength);
-//            }
-//            return null;
-//        } catch (SQLException e){
-//            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to convert Blob to byte array", e);
-//        }
-//    }
-
 }
 

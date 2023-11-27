@@ -26,7 +26,10 @@ public class CouponsController {
     @PostMapping
     public int addCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) throws Exception {
         SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
-        coupon.setCompanyId(successfulLoginDetails.getCompanyId());
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType == UserType.COMPANY) {
+            coupon.setCompanyId(successfulLoginDetails.getCompanyId());
+        }
         return this.couponLogic.addCoupon(coupon);
     }
 
@@ -47,9 +50,12 @@ public class CouponsController {
 
     @GetMapping
     public List<CouponToClient> getAllCoupons() throws ApplicationException {
-        List<CouponToClient> allCoupons = this.couponLogic.getAll();
-        return allCoupons;
-//        return this.couponLogic.getAll();
+        return this.couponLogic.getAll();
+    }
+
+    @GetMapping("/available")
+    public List<CouponToClient> getAllAvailable() throws ApplicationException {
+        return this.couponLogic.getAllAvailable();
     }
 
     @GetMapping("/{id}")
@@ -77,5 +83,4 @@ public class CouponsController {
     public List<CouponToClient> getCouponsByCategory(@RequestParam("categoryName") String categoryName) throws ApplicationException {
         return this.couponLogic.getByCategoryName(categoryName);
     }
-
 }
