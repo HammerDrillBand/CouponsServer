@@ -45,10 +45,15 @@ public class UserLogic {
     }
 
     public void updateUser(User user) throws ApplicationException {
-        validateUser(user);
-        String password = user.getPassword();
-        String encodedPassword = PasswordEncryption.encryptPassword(password);
-        user.setPassword(encodedPassword);
+        if (user.getPassword() == ""){
+            User currentUser = usersDal.getById(user.getId());
+            user.setPassword(currentUser.getPassword());
+        } else {
+            validateUser(user);
+            String password = user.getPassword();
+            String encodedPassword = PasswordEncryption.encryptPassword(password);
+            user.setPassword(encodedPassword);
+        }
 
         UserEntity userEntity = new UserEntity(user);
         try {
