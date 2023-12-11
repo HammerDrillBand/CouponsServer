@@ -2,6 +2,8 @@ package com.oleg.coupons.dal;
 
 import com.oleg.coupons.dto.CouponToClient;
 import com.oleg.coupons.entities.CouponEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -31,9 +33,31 @@ public interface ICouponsDal extends CrudRepository<CouponEntity, Integer> {
     @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.isAvailable = true")
     List<CouponToClient> getAllAvailable();
 
+    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.isAvailable = true AND c.price >= :minPrice AND c.price <= :maxPrice")
+    Page<CouponToClient> getAvailableByFilters(
+            @Param("categoryIds") int[] categoryIds,
+            @Param("companyIds") int[] companyIds,
+            @Param("minPrice") Float minPrice,
+            @Param("maxPrice") Float maxPrice,
+            Pageable pageable);
+
+    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.price >= :minPrice AND c.price <= :maxPrice")
+    Page<CouponToClient> getAllByFilters(
+            @Param("categoryIds") int[] categoryIds,
+            @Param("companyIds") int[] companyIds,
+            @Param("minPrice") Float minPrice,
+            @Param("maxPrice") Float maxPrice,
+            Pageable pageable);
+
     @Query("FROM CouponEntity c WHERE c.endDate < current_date()")
     List<CouponEntity> getExpiredCoupons();
 
     @Query("SELECT c.isAvailable FROM CouponEntity c WHERE c.id = :id")
     boolean isAvailable(@Param("id") int id);
+
+    @Query("SELECT MIN(c.price) FROM CouponEntity c")
+    Float getMinPrice();
+
+    @Query("SELECT MAX(c.price) FROM CouponEntity c")
+    Float getMaxPrice();
 }

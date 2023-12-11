@@ -2,6 +2,7 @@ package com.oleg.coupons.controllers;
 
 import com.oleg.coupons.dto.Coupon;
 import com.oleg.coupons.dto.CouponToClient;
+import com.oleg.coupons.dto.CouponsPageResult;
 import com.oleg.coupons.dto.SuccessfulLoginDetails;
 import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
@@ -25,22 +26,14 @@ public class CouponsController {
 
     @PostMapping
     public int addCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) throws Exception {
-        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
-        UserType userType = successfulLoginDetails.getUserType();
-        if (userType == UserType.COMPANY) {
-            coupon.setCompanyId(successfulLoginDetails.getCompanyId());
-        }
-        return this.couponLogic.addCoupon(coupon);
+        Coupon adjustedCoupon = adjustCompanyIdByUserType(token, coupon);
+        return this.couponLogic.addCoupon(adjustedCoupon);
     }
 
     @PutMapping
     public void updateCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) throws Exception {
-        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
-        UserType userType = successfulLoginDetails.getUserType();
-        if (userType == UserType.COMPANY) {
-            coupon.setCompanyId(successfulLoginDetails.getCompanyId());
-        }
-        this.couponLogic.updateCoupon(coupon);
+        Coupon adjustedCoupon = adjustCompanyIdByUserType(token, coupon);
+        this.couponLogic.updateCoupon(adjustedCoupon);
     }
 
     @DeleteMapping("/{id}")
@@ -63,6 +56,26 @@ public class CouponsController {
         return this.couponLogic.getById(id);
     }
 
+    @GetMapping("/byFilters")
+    public CouponsPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("page") int page, @RequestParam("categoryIds") int[] categoryIds, @RequestParam("companyIds") int[] companyIds, @RequestParam(value = "minPrice", required = false) Float minPrice, @RequestParam(value = "maxPrice", required = false) Float maxPrice) throws Exception {
+        UserType userType;
+
+        if (token == null) {
+            userType = UserType.CUSTOMER;
+        } else {
+            SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+            userType = successfulLoginDetails.getUserType();
+
+            if (userType == UserType.COMPANY) {
+                int companyId = successfulLoginDetails.getCompanyId();
+                companyIds = new int[]{companyId};
+            }
+        }
+
+        CouponsPageResult coupons = this.couponLogic.getByFilters(userType, page, categoryIds, companyIds, minPrice, maxPrice);
+        return coupons;
+    }
+
     @GetMapping("/belowPrice")
     public List<CouponToClient> getCouponsBelowPrice(@RequestParam("price") float maxPrice) throws ApplicationException {
         return this.couponLogic.getBelowPrice(maxPrice);
@@ -82,5 +95,25 @@ public class CouponsController {
     @GetMapping("/byCategoryName")
     public List<CouponToClient> getCouponsByCategory(@RequestParam("categoryName") String categoryName) throws ApplicationException {
         return this.couponLogic.getByCategoryName(categoryName);
+    }
+
+    @GetMapping("/minPrice")
+    public Float getMinPrice() throws ApplicationException {
+        return this.couponLogic.getMinPrice();
+    }
+
+    @GetMapping("/maxPrice")
+    public Float getMaxPrice() throws ApplicationException {
+        return this.couponLogic.getMaxPrice();
+    }
+
+
+    private Coupon adjustCompanyIdByUserType(String token, Coupon coupon) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType == UserType.COMPANY) {
+            coupon.setCompanyId(successfulLoginDetails.getCompanyId());
+        }
+        return coupon;
     }
 }

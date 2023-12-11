@@ -3,11 +3,16 @@ package com.oleg.coupons.logic;
 import com.oleg.coupons.dal.ICouponsDal;
 import com.oleg.coupons.dto.Coupon;
 import com.oleg.coupons.dto.CouponToClient;
+import com.oleg.coupons.dto.CouponsPageResult;
 import com.oleg.coupons.entities.CouponEntity;
 import com.oleg.coupons.enums.ErrorType;
+import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.utils.CommonValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +84,48 @@ public class CouponLogic {
         return coupons;
     }
 
+    public CouponsPageResult getByFilters(UserType userType, int page, int[] categoryIds, int[] companyIds, Float minPrice, Float maxPrice) throws ApplicationException {
+        int couponsPerPage = 12;
+
+//        if (categoryIds.length == 0) {
+//            List<Category> allCategories = categoryLogic.getAll();
+//            categoryIds = allCategories.stream().mapToInt(Category::getId).toArray();
+//        }
+//
+//        if (companyIds.length == 0) {
+//            List<Company> allCompanies = companyLogic.getAll();
+//            companyIds = allCompanies.stream().mapToInt(Company::getId).toArray();
+//        }
+//
+//        if (minPrice == null || minPrice == 0) {
+//            minPrice = couponsDal.getMinPrice();
+//        }
+//
+//        if (maxPrice == null || maxPrice == 0) {
+//            maxPrice = couponsDal.getMaxPrice();
+//        }
+//
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, couponsPerPage);
+        Page<CouponToClient> couponsPage;
+
+        if (userType == UserType.ADMIN || userType == UserType.COMPANY) {
+            couponsPage = this.couponsDal.getAllByFilters(categoryIds, companyIds, minPrice, maxPrice, pageable);
+        } else {
+            couponsPage = this.couponsDal.getAvailableByFilters(categoryIds, companyIds, minPrice, maxPrice, pageable);
+        }
+
+        int totalPages = couponsPage.getTotalPages();
+        List<CouponToClient> coupons = couponsPage.getContent();
+
+        if (coupons == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
+        }
+
+        CouponsPageResult couponsPageResult = new CouponsPageResult(coupons, totalPages);
+        return couponsPageResult;
+    }
+
     public List<CouponToClient> getBelowPrice(float maxPrice) throws ApplicationException {
         List<CouponToClient> coupons = this.couponsDal.getBelowPrice(maxPrice);
         if (coupons == null) {
@@ -117,6 +164,26 @@ public class CouponLogic {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "There are currently no available coupons");
         }
         return coupons;
+    }
+
+    public Float getMinPrice() throws ApplicationException {
+        Float minPrice;
+        try{
+            minPrice = couponsDal.getMinPrice();
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve lowest coupon price", e);
+        }
+        return minPrice;
+    }
+
+    public Float getMaxPrice() throws ApplicationException {
+        Float maxPrice;
+        try{
+            maxPrice = couponsDal.getMaxPrice();
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve highest coupon price", e);
+        }
+        return maxPrice;
     }
 
     private void validateCoupon(Coupon coupon) throws ApplicationException {

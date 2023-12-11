@@ -41,6 +41,7 @@ public class LoginFilter implements Filter {
     }
 
     private boolean isRequestAWhitelisted(String methodType, String url) {
+
         if (methodType.equals("post") && url.endsWith("users/login")){
             return true;
         }
@@ -54,6 +55,18 @@ public class LoginFilter implements Filter {
         }
 
         if (methodType.equals("get") && url.endsWith("/coupons/available")){
+            return true;
+        }
+
+        if (methodType.equals("get") && url.endsWith("/coupons/byfilters")){
+            return true;
+        }
+
+        if (methodType.equals("get") && url.endsWith("/coupons/minprice")){
+            return true;
+        }
+
+        if (methodType.equals("get") && url.endsWith("/coupons/maxprice")){
             return true;
         }
 
