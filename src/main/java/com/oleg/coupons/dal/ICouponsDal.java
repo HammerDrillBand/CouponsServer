@@ -58,6 +58,12 @@ public interface ICouponsDal extends CrudRepository<CouponEntity, Integer> {
     @Query("SELECT MIN(c.price) FROM CouponEntity c")
     Float getMinPrice();
 
+    @Query("SELECT MIN(c.price) FROM CouponEntity c WHERE c.company.id = :companyId")
+    Float getMinPriceByCompany(@Param("companyId") int companyId);
+
     @Query("SELECT MAX(c.price) FROM CouponEntity c")
     Float getMaxPrice();
+
+    @Query("SELECT MAX(c.price) FROM CouponEntity c WHERE c.company.id = :companyId")
+    Float getMaxPriceByCompany(@Param("companyId") int companyId);
 }

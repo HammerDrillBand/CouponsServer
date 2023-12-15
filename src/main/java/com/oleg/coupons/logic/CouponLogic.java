@@ -87,24 +87,6 @@ public class CouponLogic {
     public CouponsPageResult getByFilters(UserType userType, int page, int[] categoryIds, int[] companyIds, Float minPrice, Float maxPrice) throws ApplicationException {
         int couponsPerPage = 12;
 
-//        if (categoryIds.length == 0) {
-//            List<Category> allCategories = categoryLogic.getAll();
-//            categoryIds = allCategories.stream().mapToInt(Category::getId).toArray();
-//        }
-//
-//        if (companyIds.length == 0) {
-//            List<Company> allCompanies = companyLogic.getAll();
-//            companyIds = allCompanies.stream().mapToInt(Company::getId).toArray();
-//        }
-//
-//        if (minPrice == null || minPrice == 0) {
-//            minPrice = couponsDal.getMinPrice();
-//        }
-//
-//        if (maxPrice == null || maxPrice == 0) {
-//            maxPrice = couponsDal.getMaxPrice();
-//        }
-//
         int adjustedPage = page - 1;
         Pageable pageable = PageRequest.of(adjustedPage, couponsPerPage);
         Page<CouponToClient> couponsPage;
@@ -168,8 +150,18 @@ public class CouponLogic {
 
     public Float getMinPrice() throws ApplicationException {
         Float minPrice;
-        try{
+        try {
             minPrice = couponsDal.getMinPrice();
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve lowest coupon price", e);
+        }
+        return minPrice;
+    }
+
+    public Float getMinPriceByCompany(int companyId) throws ApplicationException {
+        Float minPrice;
+        try {
+            minPrice = couponsDal.getMinPriceByCompany(companyId);
         } catch (Exception e) {
             throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve lowest coupon price", e);
         }
@@ -178,13 +170,24 @@ public class CouponLogic {
 
     public Float getMaxPrice() throws ApplicationException {
         Float maxPrice;
-        try{
+        try {
             maxPrice = couponsDal.getMaxPrice();
         } catch (Exception e) {
             throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve highest coupon price", e);
         }
         return maxPrice;
     }
+
+    public Float getMaxPriceByCompany(int companyId) throws ApplicationException {
+        Float maxPrice;
+        try {
+            maxPrice = couponsDal.getMaxPriceByCompany(companyId);
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to retrieve highest coupon price", e);
+        }
+        return maxPrice;
+    }
+
 
     private void validateCoupon(Coupon coupon) throws ApplicationException {
         validateCouponName(coupon.getName());

@@ -98,12 +98,30 @@ public class CouponsController {
     }
 
     @GetMapping("/minPrice")
-    public Float getMinPrice() throws ApplicationException {
+    public Float getMinPrice(@RequestHeader(value = "Authorization", required = false) String token) throws Exception {
+        if (token == null) {
+            return this.couponLogic.getMinPrice();
+        }
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType == UserType.COMPANY) {
+            int companyId = successfulLoginDetails.getCompanyId();
+            return this.couponLogic.getMinPriceByCompany(companyId);
+        }
         return this.couponLogic.getMinPrice();
     }
 
     @GetMapping("/maxPrice")
-    public Float getMaxPrice() throws ApplicationException {
+    public Float getMaxPrice(@RequestHeader(value = "Authorization", required = false) String token) throws Exception {
+        if (token == null) {
+            return this.couponLogic.getMaxPrice();
+        }
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType == UserType.COMPANY) {
+            int companyId = successfulLoginDetails.getCompanyId();
+            return this.couponLogic.getMaxPriceByCompany(companyId);
+        }
         return this.couponLogic.getMaxPrice();
     }
 
