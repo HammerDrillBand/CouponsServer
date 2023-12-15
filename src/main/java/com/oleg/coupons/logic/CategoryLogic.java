@@ -1,12 +1,16 @@
 package com.oleg.coupons.logic;
 
 import com.oleg.coupons.dal.ICategoriesDal;
+import com.oleg.coupons.dto.CategoriesPageResult;
 import com.oleg.coupons.dto.Category;
 import com.oleg.coupons.entities.CategoryEntity;
 import com.oleg.coupons.enums.ErrorType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.utils.CommonValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,6 +71,23 @@ public class CategoryLogic {
         }
         return categories;
     }
+
+    public CategoriesPageResult getByPage(int page) throws ApplicationException {
+        int categoriesPerPage = 20;
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, categoriesPerPage);
+        Page<Category> categoriesPage = this.categoriesDal.getByPage(pageable);
+        if (categoriesPage == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the categories you were looking for");
+        }
+        int totalPages = categoriesPage.getTotalPages();
+        List<Category> categories = categoriesPage.getContent();
+
+        CategoriesPageResult categoriesPageResult = new CategoriesPageResult(categories, totalPages);
+
+        return categoriesPageResult;
+    }
+
 
     private void validateCategoryName(String name) throws ApplicationException {
         int validationResult = CommonValidations.validateStringLength(name, 2, 45);

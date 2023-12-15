@@ -2,6 +2,7 @@ package com.oleg.coupons.controllers;
 
 import com.oleg.coupons.dto.User;
 import com.oleg.coupons.dto.UserLoginData;
+import com.oleg.coupons.dto.UsersPageResult;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.UserLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,10 @@ public class UsersController {
     @PostMapping("/login")
     public String login(@RequestBody UserLoginData loginDetails) throws ApplicationException {
         return this.userLogic.login(loginDetails);
+    }
+
+    @GetMapping("/byPage")
+    public UsersPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
+        return this.userLogic.getByPage(page);
     }
 }

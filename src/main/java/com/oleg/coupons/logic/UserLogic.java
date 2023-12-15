@@ -1,9 +1,7 @@
 package com.oleg.coupons.logic;
 
 import com.oleg.coupons.dal.IUsersDal;
-import com.oleg.coupons.dto.SuccessfulLoginDetails;
-import com.oleg.coupons.dto.User;
-import com.oleg.coupons.dto.UserLoginData;
+import com.oleg.coupons.dto.*;
 import com.oleg.coupons.entities.UserEntity;
 import com.oleg.coupons.enums.ErrorType;
 import com.oleg.coupons.enums.UserType;
@@ -12,6 +10,9 @@ import com.oleg.coupons.utils.CommonValidations;
 import com.oleg.coupons.utils.JWTUtils;
 import com.oleg.coupons.utils.PasswordEncryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,6 +89,22 @@ public class UserLogic {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
         }
         return users;
+    }
+
+    public UsersPageResult getByPage(int page) throws ApplicationException {
+        int usersPerPage = 20;
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, usersPerPage);
+        Page<User> usersPage = this.usersDal.getByPage(pageable);
+        if (usersPage == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
+        }
+        int totalPages = usersPage.getTotalPages();
+        List<User> users = usersPage.getContent();
+
+        UsersPageResult usersPageResult = new UsersPageResult(users, totalPages);
+
+        return usersPageResult;
     }
 
     public User getByUsername(String username) throws ApplicationException {

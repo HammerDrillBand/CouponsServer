@@ -1,5 +1,6 @@
 package com.oleg.coupons.controllers;
 
+import com.oleg.coupons.dto.CompaniesPageResult;
 import com.oleg.coupons.dto.Company;
 import com.oleg.coupons.enums.CompanyType;
 import com.oleg.coupons.exceptions.ApplicationException;
@@ -53,5 +54,10 @@ public class CompaniesController {
     @GetMapping("/byType")
     public List<Company> getByType(@RequestParam("type") CompanyType type) throws ApplicationException {
         return this.companyLogic.getByType(type);
+    }
+
+    @GetMapping("/byPage")
+    public CompaniesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
+        return this.companyLogic.getByPage(page);
     }
 }

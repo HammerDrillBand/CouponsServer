@@ -3,6 +3,8 @@ package com.oleg.coupons.dal;
 import com.oleg.coupons.dto.SuccessfulLoginDetails;
 import com.oleg.coupons.dto.User;
 import com.oleg.coupons.entities.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +27,7 @@ public interface IUsersDal extends CrudRepository<UserEntity, Integer> {
 
     @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u WHERE u.username = :username")
     User getByUsername(@Param("username") String username);
+
+    @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u")
+    Page<User> getByPage(Pageable pageable);
 }

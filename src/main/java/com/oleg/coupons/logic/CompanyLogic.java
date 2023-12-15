@@ -1,6 +1,7 @@
 package com.oleg.coupons.logic;
 
 import com.oleg.coupons.dal.ICompaniesDal;
+import com.oleg.coupons.dto.CompaniesPageResult;
 import com.oleg.coupons.dto.Company;
 import com.oleg.coupons.entities.CompanyEntity;
 import com.oleg.coupons.enums.CompanyType;
@@ -8,6 +9,9 @@ import com.oleg.coupons.enums.ErrorType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.utils.CommonValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,6 +80,22 @@ public class CompanyLogic {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the companies you were looking for");
         }
         return companies;
+    }
+
+    public CompaniesPageResult getByPage(int page) throws ApplicationException {
+        int companiesPerPage = 20;
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, companiesPerPage);
+        Page<Company> companiesPage = this.companiesDal.getByPage(pageable);
+        if (companiesPage == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the companies you were looking for");
+        }
+        int totalPages = companiesPage.getTotalPages();
+        List<Company> companies = companiesPage.getContent();
+
+        CompaniesPageResult companiesPageResult = new CompaniesPageResult(companies, totalPages);
+
+        return companiesPageResult;
     }
 
     public List<Company> getByType(CompanyType type) throws ApplicationException {

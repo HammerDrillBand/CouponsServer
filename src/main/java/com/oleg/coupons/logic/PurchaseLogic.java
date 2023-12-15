@@ -4,10 +4,14 @@ import com.oleg.coupons.dal.IPurchasesDal;
 import com.oleg.coupons.dto.CouponToClient;
 import com.oleg.coupons.dto.Purchase;
 import com.oleg.coupons.dto.PurchaseToClient;
+import com.oleg.coupons.dto.PurchasesPageResult;
 import com.oleg.coupons.entities.PurchaseEntity;
 import com.oleg.coupons.enums.ErrorType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,7 @@ public class PurchaseLogic {
 
     private IPurchasesDal purchasesDal;
     private CouponLogic couponLogic;
+    private int purchasesPerPage = 20;
 
     @Autowired
     public PurchaseLogic(IPurchasesDal purchasesDal, CouponLogic couponLogic) {
@@ -87,20 +92,53 @@ public class PurchaseLogic {
         return purchases;
     }
 
-    public List<PurchaseToClient> getByCompanyId(int companyId) throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getByCompanyId(companyId);
-        if (purchases == null) {
+    public PurchasesPageResult getByPage(int page) throws ApplicationException {
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
+        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByPage(pageable);
+        if (purchasesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
         }
-        return purchases;
+        int totalPages = purchasesPage.getTotalPages();
+        List<PurchaseToClient> purchases = purchasesPage.getContent();
+
+        PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
+
+        return purchasesPageResult;
     }
 
-    public List<PurchaseToClient> getByUserId(int userId) throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getByUserId(userId);
-        if (purchases == null) {
+    public PurchasesPageResult getByCompanyId(int companyId, int page) throws ApplicationException {
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
+
+        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByCompanyId(companyId, pageable);
+        if (purchasesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
         }
-        return purchases;
+
+        int totalPages = purchasesPage.getTotalPages();
+        List<PurchaseToClient> purchases = purchasesPage.getContent();
+
+        PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
+
+        return purchasesPageResult;
+    }
+
+    public PurchasesPageResult getByUserId(int userId, int page) throws ApplicationException {
+        int adjustedPage = page - 1;
+        Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
+
+        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByUserId(userId, pageable);
+        if (purchasesPage == null) {
+            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
+        }
+
+        int totalPages = purchasesPage.getTotalPages();
+        List<PurchaseToClient> purchases = purchasesPage.getContent();
+
+        PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
+
+        return purchasesPageResult;
     }
 
     public List<PurchaseToClient> getByCategory(int categoryId) throws ApplicationException {

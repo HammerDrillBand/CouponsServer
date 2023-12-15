@@ -1,5 +1,6 @@
 package com.oleg.coupons.controllers;
 
+import com.oleg.coupons.dto.CategoriesPageResult;
 import com.oleg.coupons.dto.Category;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.CategoryLogic;
@@ -42,5 +43,10 @@ public class CategoriesController {
     @GetMapping("/{id}")
     public Category getCategory(@PathVariable("id") int id) throws ApplicationException {
         return this.categoryLogic.getById(id);
+    }
+
+    @GetMapping("/byPage")
+    public CategoriesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
+        return this.categoryLogic.getByPage(page);
     }
 }

@@ -2,6 +2,7 @@ package com.oleg.coupons.controllers;
 
 import com.oleg.coupons.dto.Purchase;
 import com.oleg.coupons.dto.PurchaseToClient;
+import com.oleg.coupons.dto.PurchasesPageResult;
 import com.oleg.coupons.dto.SuccessfulLoginDetails;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.PurchaseLogic;
@@ -53,21 +54,22 @@ public class PurchasesController {
     }
 
     @GetMapping("/byCompanyId")
-    public List<PurchaseToClient> getPurchasesByCompanyId(@RequestParam("companyId") int companyId) throws ApplicationException {
-        return this.purchaseLogic.getByCompanyId(companyId);
+    public PurchasesPageResult getPurchasesByCompanyId(@RequestHeader("Authorization") String token, @RequestParam("page") int page) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        return this.purchaseLogic.getByCompanyId(successfulLoginDetails.getCompanyId(), page);
     }
 
     //For admin use
-    @GetMapping("/byUserId")
-    public List<PurchaseToClient> getPurchasesByUserId(@RequestParam("userId") int userId) throws ApplicationException {
-        return this.purchaseLogic.getByUserId(userId);
-    }
+//    @GetMapping("/byUserId")
+//    public List<PurchaseToClient> getPurchasesByUserId(@RequestParam("userId") int userId) throws ApplicationException {
+//        return this.purchaseLogic.getByUserId(userId);
+//    }
 
     //For user use
-    @GetMapping("/byUser")
-    public List<PurchaseToClient> getPurchasesByUser(@RequestHeader("Authorization") String token) throws Exception {
+    @GetMapping("/byUserId")
+    public PurchasesPageResult getPurchasesByUser(@RequestHeader("Authorization") String token, @RequestParam("page") int page) throws Exception {
         SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
-        return this.purchaseLogic.getByUserId(successfulLoginDetails.getId());
+        return this.purchaseLogic.getByUserId(successfulLoginDetails.getId(), page);
     }
 
     @GetMapping("/byCategoryId")
@@ -83,5 +85,10 @@ public class PurchasesController {
     @GetMapping("/byDateRange")
     public List<PurchaseToClient> getPurchasesByDateRange(@RequestParam("fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate, @RequestParam("toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate) throws ApplicationException {
         return this.purchaseLogic.getByDateRange(fromDate, toDate);
+    }
+
+    @GetMapping("/byPage")
+    public PurchasesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
+        return this.purchaseLogic.getByPage(page);
     }
 }
