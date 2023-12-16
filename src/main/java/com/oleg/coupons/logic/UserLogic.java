@@ -1,7 +1,10 @@
 package com.oleg.coupons.logic;
 
 import com.oleg.coupons.dal.IUsersDal;
-import com.oleg.coupons.dto.*;
+import com.oleg.coupons.dto.SuccessfulLoginDetails;
+import com.oleg.coupons.dto.User;
+import com.oleg.coupons.dto.UserLoginData;
+import com.oleg.coupons.dto.UsersPageResult;
 import com.oleg.coupons.entities.UserEntity;
 import com.oleg.coupons.enums.ErrorType;
 import com.oleg.coupons.enums.UserType;
@@ -46,7 +49,7 @@ public class UserLogic {
     }
 
     public void updateUser(User user) throws ApplicationException {
-        if (user.getPassword() == ""){
+        if (user.getPassword() == "") {
             User currentUser = usersDal.getById(user.getId());
             user.setPassword(currentUser.getPassword());
         } else {
@@ -91,11 +94,11 @@ public class UserLogic {
         return users;
     }
 
-    public UsersPageResult getByPage(int page) throws ApplicationException {
+    public UsersPageResult getByFilters(int page, int[] companyIds) throws ApplicationException {
         int usersPerPage = 20;
         int adjustedPage = page - 1;
         Pageable pageable = PageRequest.of(adjustedPage, usersPerPage);
-        Page<User> usersPage = this.usersDal.getByPage(pageable);
+        Page<User> usersPage = this.usersDal.getByFilters(companyIds, pageable);
         if (usersPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
         }
@@ -139,7 +142,7 @@ public class UserLogic {
         try {
             String token = JWTUtils.createJWT(successfulLoginDetails);
             return token;
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to login", e);
         }
     }

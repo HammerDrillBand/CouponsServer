@@ -28,6 +28,8 @@ public interface IUsersDal extends CrudRepository<UserEntity, Integer> {
     @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u WHERE u.username = :username")
     User getByUsername(@Param("username") String username);
 
-    @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u")
-    Page<User> getByPage(Pageable pageable);
+    @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u WHERE u.company.id IN :companyIds")
+    Page<User> getByFilters(
+            @Param("companyIds")int[] companyIds,
+            Pageable pageable);
 }

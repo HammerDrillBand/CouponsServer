@@ -36,8 +36,17 @@ public interface IPurchasesDal extends CrudRepository<PurchaseEntity, Integer> {
     List<PurchaseToClient> getByCategory(@Param("categoryName") String categoryName);
 
     @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.date >= :fromDate AND p.date<=:toDate")
-    List<PurchaseToClient> getByDateRange(@Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
+    List<PurchaseToClient> getByDateRange(@Param("fromDate") Date fromDate,
+                                          @Param("toDate") Date toDate);
 
-    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p")
-    Page<PurchaseToClient> getByPage(Pageable pageable);
+    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds")
+    Page<PurchaseToClient> getByFilters(@Param("companyIds") int[] companyIds,
+                                        @Param("categoryIds") int[] categoryIds,
+                                        Pageable pageable);
+
+    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.user.id = :userId AND p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds")
+    Page<PurchaseToClient> getCustomerPurchasesByFilters(@Param("userId") int userId,
+                                                         @Param("companyIds") int[] companyIds,
+                                                         @Param("categoryIds") int[] categoryIds,
+                                                         Pageable pageable);
 }

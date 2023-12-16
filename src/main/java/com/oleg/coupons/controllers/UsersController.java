@@ -56,8 +56,8 @@ public class UsersController {
         return this.userLogic.login(loginDetails);
     }
 
-    @GetMapping("/byPage")
-    public UsersPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
-        return this.userLogic.getByPage(page);
+    @GetMapping("/byFilters")
+    public UsersPageResult getByFilters(@RequestParam("page") int page, @RequestParam("companyIds") int[] companyIds) throws ApplicationException {
+        return this.userLogic.getByFilters(page, companyIds);
     }
 }

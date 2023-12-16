@@ -7,6 +7,7 @@ import com.oleg.coupons.dto.PurchaseToClient;
 import com.oleg.coupons.dto.PurchasesPageResult;
 import com.oleg.coupons.entities.PurchaseEntity;
 import com.oleg.coupons.enums.ErrorType;
+import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -92,10 +93,15 @@ public class PurchaseLogic {
         return purchases;
     }
 
-    public PurchasesPageResult getByPage(int page) throws ApplicationException {
+    public PurchasesPageResult getByFilters(int page, int[] companyIds, int[] categoryIds, UserType userType, int userId) throws ApplicationException {
         int adjustedPage = page - 1;
         Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
-        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByPage(pageable);
+        Page<PurchaseToClient> purchasesPage;
+        if (userType == UserType.CUSTOMER) {
+            purchasesPage = this.purchasesDal.getCustomerPurchasesByFilters(userId, companyIds, categoryIds, pageable);
+        } else {
+            purchasesPage = this.purchasesDal.getByFilters(companyIds, categoryIds, pageable);
+        }
         if (purchasesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
         }
@@ -218,5 +224,4 @@ public class PurchaseLogic {
         coupon.setAmount(newAmount);
         this.couponLogic.updateCoupon(coupon);
     }
-
 }

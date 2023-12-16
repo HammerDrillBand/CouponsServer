@@ -4,6 +4,7 @@ import com.oleg.coupons.dto.Purchase;
 import com.oleg.coupons.dto.PurchaseToClient;
 import com.oleg.coupons.dto.PurchasesPageResult;
 import com.oleg.coupons.dto.SuccessfulLoginDetails;
+import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.PurchaseLogic;
 import com.oleg.coupons.utils.JWTUtils;
@@ -87,8 +88,17 @@ public class PurchasesController {
         return this.purchaseLogic.getByDateRange(fromDate, toDate);
     }
 
-    @GetMapping("/byPage")
-    public PurchasesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
-        return this.purchaseLogic.getByPage(page);
+    @GetMapping("/byFilters")
+    public PurchasesPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("page") int page, @RequestParam("companyIds") int[] companyIds, @RequestParam("categoryIds") int[] categoryIds) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        int userId = successfulLoginDetails.getId();
+
+        if (userType == UserType.COMPANY) {
+            int companyId = successfulLoginDetails.getCompanyId();
+            companyIds = new int[]{companyId};
+        }
+
+        return this.purchaseLogic.getByFilters(page, companyIds, categoryIds, userType, userId);
     }
 }
