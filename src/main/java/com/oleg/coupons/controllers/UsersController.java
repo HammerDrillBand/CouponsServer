@@ -57,7 +57,9 @@ public class UsersController {
     }
 
     @GetMapping("/byFilters")
-    public UsersPageResult getByFilters(@RequestParam("page") int page, @RequestParam("companyIds") int[] companyIds) throws ApplicationException {
-        return this.userLogic.getByFilters(page, companyIds);
+    public UsersPageResult getByFilters(@RequestParam("page") int page,
+                                        @RequestParam(value = "companyIds", required = false) Integer[] companyIds,
+                                        @RequestParam(value = "searchText", required = false) String searchText) throws ApplicationException {
+        return this.userLogic.getByFilters(page, companyIds, searchText);
     }
 }

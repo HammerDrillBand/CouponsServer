@@ -94,11 +94,22 @@ public class UserLogic {
         return users;
     }
 
-    public UsersPageResult getByFilters(int page, int[] companyIds) throws ApplicationException {
+    public UsersPageResult getByFilters(int page, Integer[] companyIds, String searchText) throws ApplicationException {
         int usersPerPage = 20;
         int adjustedPage = page - 1;
+
+        searchText = searchText.toLowerCase();
+
         Pageable pageable = PageRequest.of(adjustedPage, usersPerPage);
-        Page<User> usersPage = this.usersDal.getByFilters(companyIds, pageable);
+        Page<User> usersPage;
+
+        if(companyIds[0] == null){
+            usersPage = this.usersDal.getByFilters(searchText, pageable);
+        } else {
+            companyIds = companyLogic.getAllCompanyIds();
+            usersPage = this.usersDal.getComapnyTypeByFilters(companyIds, searchText, pageable);
+        }
+
         if (usersPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
         }

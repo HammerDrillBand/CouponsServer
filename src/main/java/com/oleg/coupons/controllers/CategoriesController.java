@@ -45,8 +45,9 @@ public class CategoriesController {
         return this.categoryLogic.getById(id);
     }
 
-    @GetMapping("/byPage")
-    public CategoriesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
-        return this.categoryLogic.getByPage(page);
+    @GetMapping("/byFilters")
+    public CategoriesPageResult getByFilters(@RequestParam("page") int page,
+                                             @RequestParam(value = "searchText", required = false) String searchText) throws ApplicationException {
+        return this.categoryLogic.getByFilters(page, searchText);
     }
 }

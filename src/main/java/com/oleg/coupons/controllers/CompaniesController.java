@@ -56,8 +56,9 @@ public class CompaniesController {
         return this.companyLogic.getByType(type);
     }
 
-    @GetMapping("/byPage")
-    public CompaniesPageResult getByPage(@RequestParam("page") int page) throws ApplicationException {
-        return this.companyLogic.getByPage(page);
+    @GetMapping("/byFilters")
+    public CompaniesPageResult getByFilters(@RequestParam("page") int page,
+                                            @RequestParam(value = "searchText", required = false) String searchText) throws ApplicationException {
+        return this.companyLogic.getByFilters(page, searchText);
     }
 }

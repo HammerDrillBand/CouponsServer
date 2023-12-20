@@ -89,16 +89,20 @@ public class PurchasesController {
     }
 
     @GetMapping("/byFilters")
-    public PurchasesPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("page") int page, @RequestParam("companyIds") int[] companyIds, @RequestParam("categoryIds") int[] categoryIds) throws Exception {
+    public PurchasesPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token,
+                                            @RequestParam("page") int page,
+                                            @RequestParam("companyIds") Integer[] companyIds,
+                                            @RequestParam("categoryIds") Integer[] categoryIds,
+                                            @RequestParam(value = "searchText", required = false) String searchText) throws Exception {
         SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
         UserType userType = successfulLoginDetails.getUserType();
         int userId = successfulLoginDetails.getId();
 
         if (userType == UserType.COMPANY) {
             int companyId = successfulLoginDetails.getCompanyId();
-            companyIds = new int[]{companyId};
+            companyIds = new Integer[]{companyId};
         }
 
-        return this.purchaseLogic.getByFilters(page, companyIds, categoryIds, userType, userId);
+        return this.purchaseLogic.getByFilters(page, companyIds, categoryIds, userType, userId, searchText);
     }
 }

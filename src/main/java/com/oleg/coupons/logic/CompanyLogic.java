@@ -82,11 +82,14 @@ public class CompanyLogic {
         return companies;
     }
 
-    public CompaniesPageResult getByPage(int page) throws ApplicationException {
+    public CompaniesPageResult getByFilters(int page, String searchText) throws ApplicationException {
         int companiesPerPage = 20;
         int adjustedPage = page - 1;
+
+        searchText = searchText.toLowerCase();
+
         Pageable pageable = PageRequest.of(adjustedPage, companiesPerPage);
-        Page<Company> companiesPage = this.companiesDal.getByPage(pageable);
+        Page<Company> companiesPage = this.companiesDal.getByFilters(searchText, pageable);
         if (companiesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the companies you were looking for");
         }
@@ -156,4 +159,7 @@ public class CompanyLogic {
         return this.companiesDal.existsById(id);
     }
 
+    public Integer[] getAllCompanyIds() {
+        return this.companiesDal.getAllCompanyIds();
+    }
 }

@@ -20,4 +20,12 @@ public interface ICategoriesDal extends CrudRepository<CategoryEntity, Integer> 
 
     @Query("SELECT new com.oleg.coupons.dto.Category(c.id, c.name) FROM CategoryEntity c")
     Page<Category> getByPage(Pageable pageable);
+
+    @Query("SELECT new com.oleg.coupons.dto.Category(c.id, c.name) FROM CategoryEntity c WHERE (LOWER(c.name) LIKE %:searchText%)")
+    Page<Category> getByFilters(
+            @Param("searchText") String searchText,
+            Pageable pageable);
+
+    @Query("SELECT (c.id) FROM CategoryEntity c")
+    Integer[] getAllCategoryIds();
 }

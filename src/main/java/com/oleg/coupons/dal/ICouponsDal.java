@@ -33,20 +33,22 @@ public interface ICouponsDal extends CrudRepository<CouponEntity, Integer> {
     @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.isAvailable = true")
     List<CouponToClient> getAllAvailable();
 
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.isAvailable = true AND c.price >= :minPrice AND c.price <= :maxPrice")
+    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.isAvailable = true AND c.price >= :minPrice AND c.price <= :maxPrice AND (LOWER(c.name) LIKE %:searchText% OR LOWER(c.description) LIKE %:searchText%)")
     Page<CouponToClient> getAvailableByFilters(
-            @Param("categoryIds") int[] categoryIds,
-            @Param("companyIds") int[] companyIds,
+            @Param("categoryIds") Integer[] categoryIds,
+            @Param("companyIds") Integer[] companyIds,
             @Param("minPrice") Float minPrice,
             @Param("maxPrice") Float maxPrice,
+            @Param("searchText") String searchText,
             Pageable pageable);
 
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.price >= :minPrice AND c.price <= :maxPrice")
+    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.price >= :minPrice AND c.price <= :maxPrice AND (LOWER(c.name) LIKE %:searchText% OR LOWER(c.description) LIKE %:searchText%)")
     Page<CouponToClient> getAllByFilters(
-            @Param("categoryIds") int[] categoryIds,
-            @Param("companyIds") int[] companyIds,
+            @Param("categoryIds") Integer[] categoryIds,
+            @Param("companyIds") Integer[] companyIds,
             @Param("minPrice") Float minPrice,
             @Param("maxPrice") Float maxPrice,
+            @Param("searchText") String searchText,
             Pageable pageable);
 
     @Query("FROM CouponEntity c WHERE c.endDate < current_date()")

@@ -57,7 +57,13 @@ public class CouponsController {
     }
 
     @GetMapping("/byFilters")
-    public CouponsPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("page") int page, @RequestParam("categoryIds") int[] categoryIds, @RequestParam("companyIds") int[] companyIds, @RequestParam(value = "minPrice", required = false) Float minPrice, @RequestParam(value = "maxPrice", required = false) Float maxPrice) throws Exception {
+    public CouponsPageResult getByFilters(@RequestHeader(value = "Authorization", required = false) String token,
+                                          @RequestParam("page") int page,
+                                          @RequestParam("categoryIds") Integer[] categoryIds,
+                                          @RequestParam("companyIds") Integer[] companyIds,
+                                          @RequestParam(value = "minPrice", required = false) Float minPrice,
+                                          @RequestParam(value = "maxPrice", required = false) Float maxPrice,
+                                          @RequestParam(value = "searchText", required = false) String searchText) throws Exception {
         UserType userType;
 
         if (token == null) {
@@ -68,11 +74,11 @@ public class CouponsController {
 
             if (userType == UserType.COMPANY) {
                 int companyId = successfulLoginDetails.getCompanyId();
-                companyIds = new int[]{companyId};
+                companyIds = new Integer[]{companyId};
             }
         }
 
-        CouponsPageResult coupons = this.couponLogic.getByFilters(userType, page, categoryIds, companyIds, minPrice, maxPrice);
+        CouponsPageResult coupons = this.couponLogic.getByFilters(userType, page, categoryIds, companyIds, minPrice, maxPrice, searchText);
         return coupons;
     }
 

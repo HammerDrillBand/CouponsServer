@@ -39,14 +39,16 @@ public interface IPurchasesDal extends CrudRepository<PurchaseEntity, Integer> {
     List<PurchaseToClient> getByDateRange(@Param("fromDate") Date fromDate,
                                           @Param("toDate") Date toDate);
 
-    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds")
-    Page<PurchaseToClient> getByFilters(@Param("companyIds") int[] companyIds,
-                                        @Param("categoryIds") int[] categoryIds,
+    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds AND (LOWER(p.coupon.name) LIKE %:searchText% OR LOWER(p.coupon.description) LIKE %:searchText%)")
+    Page<PurchaseToClient> getByFilters(@Param("companyIds") Integer[] companyIds,
+                                        @Param("categoryIds") Integer[] categoryIds,
+                                        @Param("searchText") String searchText,
                                         Pageable pageable);
 
-    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.user.id = :userId AND p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds")
+    @Query("SELECT new com.oleg.coupons.dto.PurchaseToClient(p.id, p.coupon.id, p.user.id, p.amount, p.date, p.coupon.name, p.coupon.description, p.coupon.category.id, p.coupon.category.name, p.user.username, p.coupon.company.id, p.coupon.company.name) FROM PurchaseEntity p WHERE p.user.id = :userId AND p.coupon.company.id IN :companyIds AND p.coupon.category.id IN :categoryIds AND (LOWER(p.coupon.name) LIKE %:searchText% OR LOWER(p.coupon.description) LIKE %:searchText%)")
     Page<PurchaseToClient> getCustomerPurchasesByFilters(@Param("userId") int userId,
-                                                         @Param("companyIds") int[] companyIds,
-                                                         @Param("categoryIds") int[] categoryIds,
+                                                         @Param("companyIds") Integer[] companyIds,
+                                                         @Param("categoryIds") Integer[] categoryIds,
+                                                         @Param("searchText") String searchText,
                                                          Pageable pageable);
 }

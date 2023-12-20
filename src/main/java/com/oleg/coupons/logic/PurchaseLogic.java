@@ -25,11 +25,16 @@ public class PurchaseLogic {
     private IPurchasesDal purchasesDal;
     private CouponLogic couponLogic;
     private int purchasesPerPage = 20;
+    private CategoryLogic categoryLogic;
+    private CompanyLogic companyLogic;
+
 
     @Autowired
-    public PurchaseLogic(IPurchasesDal purchasesDal, CouponLogic couponLogic) {
+    public PurchaseLogic(IPurchasesDal purchasesDal, CouponLogic couponLogic, CategoryLogic categoryLogic, CompanyLogic companyLogic) {
         this.purchasesDal = purchasesDal;
         this.couponLogic = couponLogic;
+        this.categoryLogic = categoryLogic;
+        this.companyLogic = companyLogic;
     }
 
     @Transactional(rollbackFor = ApplicationException.class)
@@ -93,14 +98,26 @@ public class PurchaseLogic {
         return purchases;
     }
 
-    public PurchasesPageResult getByFilters(int page, int[] companyIds, int[] categoryIds, UserType userType, int userId) throws ApplicationException {
+    public PurchasesPageResult getByFilters(int page, Integer[] companyIds, Integer[] categoryIds, UserType userType, int userId, String searchText) throws ApplicationException {
         int adjustedPage = page - 1;
+
+        searchText = searchText.toLowerCase();
+
         Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
         Page<PurchaseToClient> purchasesPage;
+
+        if(companyIds[0]==null){
+            companyIds = companyLogic.getAllCompanyIds();
+        }
+
+        if(categoryIds[0]==null){
+            categoryIds = categoryLogic.getAllCategoryIds();
+        }
+
         if (userType == UserType.CUSTOMER) {
-            purchasesPage = this.purchasesDal.getCustomerPurchasesByFilters(userId, companyIds, categoryIds, pageable);
+            purchasesPage = this.purchasesDal.getCustomerPurchasesByFilters(userId, companyIds, categoryIds, searchText, pageable);
         } else {
-            purchasesPage = this.purchasesDal.getByFilters(companyIds, categoryIds, pageable);
+            purchasesPage = this.purchasesDal.getByFilters(companyIds, categoryIds, searchText, pageable);
         }
         if (purchasesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");

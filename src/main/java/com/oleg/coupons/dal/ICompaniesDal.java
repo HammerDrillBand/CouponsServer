@@ -27,4 +27,12 @@ public interface ICompaniesDal extends CrudRepository<CompanyEntity, Integer> {
 
     @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c")
     Page<Company> getByPage(Pageable pageable);
+
+    @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c WHERE (LOWER(c.name) LIKE %:searchText%)")
+    Page<Company> getByFilters(
+            @Param("searchText") String searchText,
+            Pageable pageable);
+
+    @Query("SELECT (c.id) FROM CompanyEntity c")
+    Integer[] getAllCompanyIds();
 }

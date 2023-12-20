@@ -84,17 +84,27 @@ public class CouponLogic {
         return coupons;
     }
 
-    public CouponsPageResult getByFilters(UserType userType, int page, int[] categoryIds, int[] companyIds, Float minPrice, Float maxPrice) throws ApplicationException {
+    public CouponsPageResult getByFilters(UserType userType, int page, Integer[] categoryIds, Integer[] companyIds, Float minPrice, Float maxPrice, String searchText) throws ApplicationException {
         int couponsPerPage = 12;
 
         int adjustedPage = page - 1;
         Pageable pageable = PageRequest.of(adjustedPage, couponsPerPage);
         Page<CouponToClient> couponsPage;
 
+        searchText = searchText.toLowerCase();
+
+        if(companyIds[0]==null){
+            companyIds = companyLogic.getAllCompanyIds();
+        }
+
+        if(categoryIds[0]==null){
+            categoryIds = categoryLogic.getAllCategoryIds();
+        }
+
         if (userType == UserType.ADMIN || userType == UserType.COMPANY) {
-            couponsPage = this.couponsDal.getAllByFilters(categoryIds, companyIds, minPrice, maxPrice, pageable);
+            couponsPage = this.couponsDal.getAllByFilters(categoryIds, companyIds, minPrice, maxPrice, searchText, pageable);
         } else {
-            couponsPage = this.couponsDal.getAvailableByFilters(categoryIds, companyIds, minPrice, maxPrice, pageable);
+            couponsPage = this.couponsDal.getAvailableByFilters(categoryIds, companyIds, minPrice, maxPrice, searchText, pageable);
         }
 
         int totalPages = couponsPage.getTotalPages();

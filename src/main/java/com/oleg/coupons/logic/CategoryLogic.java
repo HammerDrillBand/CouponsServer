@@ -72,11 +72,14 @@ public class CategoryLogic {
         return categories;
     }
 
-    public CategoriesPageResult getByPage(int page) throws ApplicationException {
+    public CategoriesPageResult getByFilters(int page, String searchText) throws ApplicationException {
         int categoriesPerPage = 20;
         int adjustedPage = page - 1;
+
+        searchText = searchText.toLowerCase();
+
         Pageable pageable = PageRequest.of(adjustedPage, categoriesPerPage);
-        Page<Category> categoriesPage = this.categoriesDal.getByPage(pageable);
+        Page<Category> categoriesPage = this.categoriesDal.getByFilters(searchText, pageable);
         if (categoriesPage == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the categories you were looking for");
         }
@@ -102,4 +105,9 @@ public class CategoryLogic {
     boolean isCategoryExist(int id) {
         return this.categoriesDal.existsById(id);
     }
+
+    public Integer[] getAllCategoryIds() {
+        return this.categoriesDal.getAllCategoryIds();
+    }
+
 }
