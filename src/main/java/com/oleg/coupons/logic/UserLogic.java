@@ -106,8 +106,7 @@ public class UserLogic {
         if(companyIds[0] == null){
             usersPage = this.usersDal.getByFilters(searchText, pageable);
         } else {
-            companyIds = companyLogic.getAllCompanyIds();
-            usersPage = this.usersDal.getComapnyTypeByFilters(companyIds, searchText, pageable);
+            usersPage = this.usersDal.getCompanyTypeByFilters(companyIds, searchText, pageable);
         }
 
         if (usersPage == null) {

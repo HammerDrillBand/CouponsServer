@@ -29,7 +29,7 @@ public interface IUsersDal extends CrudRepository<UserEntity, Integer> {
     User getByUsername(@Param("username") String username);
 
     @Query("SELECT new com.oleg.coupons.dto.User(u.id, u.username, u.password, u.userType, u.company.id) FROM UserEntity u WHERE u.company.id IN :companyIds AND (LOWER(u.username) LIKE %:searchText%)")
-    Page<User> getComapnyTypeByFilters(
+    Page<User> getCompanyTypeByFilters(
             @Param("companyIds") Integer[] companyIds,
             @Param("searchText") String searchText,
             Pageable pageable);
@@ -38,5 +38,4 @@ public interface IUsersDal extends CrudRepository<UserEntity, Integer> {
     Page<User> getByFilters(
             @Param("searchText") String searchText,
             Pageable pageable);
-
 }
