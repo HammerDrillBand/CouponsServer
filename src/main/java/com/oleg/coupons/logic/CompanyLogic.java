@@ -66,14 +66,6 @@ public class CompanyLogic {
         return company;
     }
 
-    public Company getByRegNum(int regNum) throws ApplicationException {
-        Company company = this.companiesDal.getByRegNum(regNum);
-        if (company == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the company you were looking for");
-        }
-        return company;
-    }
-
     public List<Company> getAll() throws ApplicationException {
         List<Company> companies = this.companiesDal.getAll();
         if (companies == null) {
@@ -99,14 +91,6 @@ public class CompanyLogic {
         CompaniesPageResult companiesPageResult = new CompaniesPageResult(companies, totalPages);
 
         return companiesPageResult;
-    }
-
-    public List<Company> getByType(CompanyType type) throws ApplicationException {
-        List<Company> companies = this.companiesDal.getByType(type);
-        if (companies == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the companies you were looking for");
-        }
-        return companies;
     }
 
     private void validateCompany(Company company) throws ApplicationException {

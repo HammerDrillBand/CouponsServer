@@ -51,51 +51,12 @@ public class PurchaseLogic {
         return purchaseEntity.getId();
     }
 
-    @Transactional(rollbackFor = ApplicationException.class)
-    public void updatePurchase(Purchase purchase) throws ApplicationException {
-        validatePurchase(purchase);
-        Purchase previousRevPurchase = getById(purchase.getId());
-
-        int oldAmount = previousRevPurchase.getAmount();
-        int newAmount = purchase.getAmount();
-        int varianceInAmount = oldAmount - newAmount;
-        if (varianceInAmount != 0) {
-            updateAmount(purchase.getCouponId(), purchase.getAmount());
-        }
-
-        PurchaseEntity purchaseEntity = new PurchaseEntity(purchase);
-        try {
-            this.purchasesDal.save(purchaseEntity);
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to update purchase", e);
-        }
-    }
-
-    public void deletePurchase(int id) throws ApplicationException {
-        if (!isPurchaseExist(id)) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchase to be deleted");
-        }
-        try {
-            this.purchasesDal.deleteById(id);
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to delete purchase with id " + id, e);
-        }
-    }
-
     public PurchaseToClient getById(int id) throws ApplicationException {
         PurchaseToClient purchase = this.purchasesDal.getById(id);
         if (purchase == null) {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchase you were looking for");
         }
         return purchase;
-    }
-
-    public List<PurchaseToClient> getAll() throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getAll();
-        if (purchases == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-        return purchases;
     }
 
     public PurchasesPageResult getByFilters(int page, Integer[] companyIds, Integer[] categoryIds, UserType userType, int userId, String searchText) throws ApplicationException {
@@ -128,64 +89,6 @@ public class PurchaseLogic {
         PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
 
         return purchasesPageResult;
-    }
-
-    public PurchasesPageResult getByCompanyId(int companyId, int page) throws ApplicationException {
-        int adjustedPage = page - 1;
-        Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
-
-        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByCompanyId(companyId, pageable);
-        if (purchasesPage == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-
-        int totalPages = purchasesPage.getTotalPages();
-        List<PurchaseToClient> purchases = purchasesPage.getContent();
-
-        PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
-
-        return purchasesPageResult;
-    }
-
-    public PurchasesPageResult getByUserId(int userId, int page) throws ApplicationException {
-        int adjustedPage = page - 1;
-        Pageable pageable = PageRequest.of(adjustedPage, this.purchasesPerPage);
-
-        Page<PurchaseToClient> purchasesPage = this.purchasesDal.getByUserId(userId, pageable);
-        if (purchasesPage == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-
-        int totalPages = purchasesPage.getTotalPages();
-        List<PurchaseToClient> purchases = purchasesPage.getContent();
-
-        PurchasesPageResult purchasesPageResult = new PurchasesPageResult(purchases, totalPages);
-
-        return purchasesPageResult;
-    }
-
-    public List<PurchaseToClient> getByCategory(int categoryId) throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getByCategory(categoryId);
-        if (purchases == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-        return purchases;
-    }
-
-    public List<PurchaseToClient> getByCategory(String categoryName) throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getByCategory(categoryName);
-        if (purchases == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-        return purchases;
-    }
-
-    public List<PurchaseToClient> getByDateRange(Date fromDate, Date toDate) throws ApplicationException {
-        List<PurchaseToClient> purchases = this.purchasesDal.getByDateRange(fromDate, toDate);
-        if (purchases == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the purchases you were looking for");
-        }
-        return purchases;
     }
 
     private void validatePurchase(Purchase purchase) throws ApplicationException {

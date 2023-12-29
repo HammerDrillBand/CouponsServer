@@ -2,9 +2,12 @@ package com.oleg.coupons.controllers;
 
 import com.oleg.coupons.dto.CompaniesPageResult;
 import com.oleg.coupons.dto.Company;
-import com.oleg.coupons.enums.CompanyType;
+import com.oleg.coupons.dto.SuccessfulLoginDetails;
+import com.oleg.coupons.enums.ErrorType;
+import com.oleg.coupons.enums.UserType;
 import com.oleg.coupons.exceptions.ApplicationException;
 import com.oleg.coupons.logic.CompanyLogic;
+import com.oleg.coupons.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,17 +25,35 @@ public class CompaniesController {
     }
 
     @PostMapping
-    public int addCompany(@RequestBody Company company) throws ApplicationException {
+    public int addCompany(@RequestHeader(value = "Authorization") String token,
+                          @RequestBody Company company) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType != UserType.ADMIN){
+            throw new ApplicationException(ErrorType.UNAUTHORIZED_REQUEST);
+        }
         return this.companyLogic.addCompany(company);
     }
 
     @PutMapping
-    public void updateCompany(@RequestBody Company company) throws ApplicationException {
+    public void updateCompany(@RequestHeader(value = "Authorization") String token,
+                              @RequestBody Company company) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType != UserType.ADMIN){
+            throw new ApplicationException(ErrorType.UNAUTHORIZED_REQUEST);
+        }
         this.companyLogic.updateCompany(company);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCompany(@PathVariable("id") int id) throws ApplicationException {
+    public void deleteCompany(@RequestHeader(value = "Authorization") String token,
+                              @PathVariable("id") int id) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType != UserType.ADMIN){
+            throw new ApplicationException(ErrorType.UNAUTHORIZED_REQUEST);
+        }
         this.companyLogic.deleteCompany(id);
     }
 
@@ -42,23 +63,25 @@ public class CompaniesController {
     }
 
     @GetMapping("/{id}")
-    public Company getCompany(@PathVariable("id") int id) throws ApplicationException {
+    public Company getCompany(@RequestHeader(value = "Authorization") String token,
+                              @PathVariable("id") int id) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType != UserType.COMPANY){
+            throw new ApplicationException(ErrorType.UNAUTHORIZED_REQUEST);
+        }
         return this.companyLogic.getById(id);
     }
 
-    @GetMapping("/byRegNum")
-    public Company getByRegNum(@RequestParam("regNum") int regNum) throws ApplicationException {
-        return this.companyLogic.getByRegNum(regNum);
-    }
-
-    @GetMapping("/byType")
-    public List<Company> getByType(@RequestParam("type") CompanyType type) throws ApplicationException {
-        return this.companyLogic.getByType(type);
-    }
-
     @GetMapping("/byFilters")
-    public CompaniesPageResult getByFilters(@RequestParam("page") int page,
-                                            @RequestParam(value = "searchText", required = false) String searchText) throws ApplicationException {
+    public CompaniesPageResult getByFilters(@RequestHeader(value = "Authorization") String token,
+                                            @RequestParam("page") int page,
+                                            @RequestParam(value = "searchText", required = false) String searchText) throws Exception {
+        SuccessfulLoginDetails successfulLoginDetails = JWTUtils.decodeJWT(token);
+        UserType userType = successfulLoginDetails.getUserType();
+        if (userType != UserType.ADMIN){
+            throw new ApplicationException(ErrorType.UNAUTHORIZED_REQUEST);
+        }
         return this.companyLogic.getByFilters(page, searchText);
     }
 }

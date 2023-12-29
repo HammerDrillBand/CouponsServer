@@ -18,21 +18,6 @@ public interface ICouponsDal extends CrudRepository<CouponEntity, Integer> {
     @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c")
     List<CouponToClient> getAll();
 
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.price < :price")
-    List<CouponToClient> getBelowPrice(@Param("price") float price);
-
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id = :companyId")
-    List<CouponToClient> getByCompanyId(@Param("companyId") int companyId);
-
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.category.id = :categoryId")
-    List<CouponToClient> getByCategoryId(@Param("categoryId") int categoryId);
-
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.category.name = :categoryName")
-    List<CouponToClient> getByCategoryName(@Param("categoryName") String categoryName);
-
-    @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.isAvailable = true")
-    List<CouponToClient> getAllAvailable();
-
     @Query("SELECT new com.oleg.coupons.dto.CouponToClient(c.id, c.name, c.description, c.startDate, c.endDate, c.amount, c.price, c.category.id, c.category.name, c.company.id, c.company.name, c.isAvailable, c.imageData) FROM CouponEntity c WHERE c.company.id IN :companyIds AND c.category.id IN :categoryIds AND c.isAvailable = true AND c.price >= :minPrice AND c.price <= :maxPrice AND (LOWER(c.name) LIKE %:searchText% OR LOWER(c.description) LIKE %:searchText%)")
     Page<CouponToClient> getAvailableByFilters(
             @Param("categoryIds") Integer[] categoryIds,

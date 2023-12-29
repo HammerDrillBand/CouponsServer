@@ -76,14 +76,6 @@ public class CouponLogic {
         return coupon;
     }
 
-    public List<CouponToClient> getAll() throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getAll();
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
-        }
-        return coupons;
-    }
-
     public CouponsPageResult getByFilters(UserType userType, int page, Integer[] categoryIds, Integer[] companyIds, Float minPrice, Float maxPrice, String searchText) throws ApplicationException {
         int couponsPerPage = 12;
 
@@ -116,46 +108,6 @@ public class CouponLogic {
 
         CouponsPageResult couponsPageResult = new CouponsPageResult(coupons, totalPages);
         return couponsPageResult;
-    }
-
-    public List<CouponToClient> getBelowPrice(float maxPrice) throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getBelowPrice(maxPrice);
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
-        }
-        return coupons;
-    }
-
-    public List<CouponToClient> getByCompanyId(int companyId) throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getByCompanyId(companyId);
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
-        }
-        return coupons;
-    }
-
-    public List<CouponToClient> getByCategoryId(int categoryId) throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getByCategoryId(categoryId);
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
-        }
-        return coupons;
-    }
-
-    public List<CouponToClient> getByCategoryName(String categoryName) throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getByCategoryName(categoryName);
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the coupons you were looking for");
-        }
-        return coupons;
-    }
-
-    public List<CouponToClient> getAllAvailable() throws ApplicationException {
-        List<CouponToClient> coupons = this.couponsDal.getAllAvailable();
-        if (coupons == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "There are currently no available coupons");
-        }
-        return coupons;
     }
 
     public Float getMinPrice() throws ApplicationException {

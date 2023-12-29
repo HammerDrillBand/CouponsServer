@@ -2,7 +2,6 @@ package com.oleg.coupons.dal;
 
 import com.oleg.coupons.dto.Company;
 import com.oleg.coupons.entities.CompanyEntity;
-import com.oleg.coupons.enums.CompanyType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -18,15 +17,6 @@ public interface ICompaniesDal extends CrudRepository<CompanyEntity, Integer> {
 
     @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c")
     List<Company> getAll();
-
-    @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c WHERE c.companyType = :type")
-    List<Company> getByType(@Param("type") CompanyType type);
-
-    @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c WHERE c.registryNumber = :regNum")
-    Company getByRegNum(@Param("regNum") int regNum);
-
-    @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c")
-    Page<Company> getByPage(Pageable pageable);
 
     @Query("SELECT new com.oleg.coupons.dto.Company(c.id, c.name, c.companyType, c.registryNumber, c.address, c.contactEmail) FROM CompanyEntity c WHERE (LOWER(c.name) LIKE %:searchText%)")
     Page<Company> getByFilters(

@@ -56,14 +56,6 @@ public class CategoryLogic {
         }
     }
 
-    public Category getById(int id) throws ApplicationException {
-        Category category = this.categoriesDal.getById(id);
-        if (category == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the category you were looking for");
-        }
-        return category;
-    }
-
     public List<Category> getAll() throws ApplicationException {
         List<Category> categories = this.categoriesDal.getAll();
         if (categories == null) {
@@ -90,7 +82,6 @@ public class CategoryLogic {
 
         return categoriesPageResult;
     }
-
 
     private void validateCategoryName(String name) throws ApplicationException {
         int validationResult = CommonValidations.validateStringLength(name, 2, 45);

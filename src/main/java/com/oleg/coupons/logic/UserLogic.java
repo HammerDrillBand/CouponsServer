@@ -48,6 +48,27 @@ public class UserLogic {
         return userEntity.getId();
     }
 
+    public String login(UserLoginData loginDetails) throws ApplicationException {
+        validateUsername(loginDetails.getUsername());
+        validatePasswordFormat(loginDetails.getPassword());
+
+        authenticatePassword(loginDetails.getUsername(), loginDetails.getPassword());
+
+        String encodedPassword = PasswordEncryption.encryptPassword(loginDetails.getPassword());
+        loginDetails.setPassword(encodedPassword);
+
+        SuccessfulLoginDetails successfulLoginDetails = this.usersDal.login(loginDetails.getUsername(), loginDetails.getPassword());
+        if (successfulLoginDetails == null) {
+            throw new ApplicationException(ErrorType.LOGIN_FAILED);
+        }
+        try {
+            String token = JWTUtils.createJWT(successfulLoginDetails);
+            return token;
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to login", e);
+        }
+    }
+
     public void updateUser(User user) throws ApplicationException {
         if (user.getPassword() == "") {
             User currentUser = usersDal.getById(user.getId());
@@ -86,14 +107,6 @@ public class UserLogic {
         return user;
     }
 
-    public List<User> getAll() throws ApplicationException {
-        List<User> users = this.usersDal.getAll();
-        if (users == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
-        }
-        return users;
-    }
-
     public UsersPageResult getByFilters(int page, Integer[] companyIds, String searchText) throws ApplicationException {
         int usersPerPage = 20;
         int adjustedPage = page - 1;
@@ -126,35 +139,6 @@ public class UserLogic {
             throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
         }
         return user;
-    }
-
-    public List<User> getByCompanyId(int companyId) throws ApplicationException {
-        List<User> users = this.usersDal.getByCompanyId(companyId);
-        if (users == null) {
-            throw new ApplicationException(ErrorType.COULD_NOT_FIND, "Could not find the users you were looking for");
-        }
-        return users;
-    }
-
-    public String login(UserLoginData loginDetails) throws ApplicationException {
-        validateUsername(loginDetails.getUsername());
-        validatePasswordFormat(loginDetails.getPassword());
-
-        authenticatePassword(loginDetails.getUsername(), loginDetails.getPassword());
-
-        String encodedPassword = PasswordEncryption.encryptPassword(loginDetails.getPassword());
-        loginDetails.setPassword(encodedPassword);
-
-        SuccessfulLoginDetails successfulLoginDetails = this.usersDal.login(loginDetails.getUsername(), loginDetails.getPassword());
-        if (successfulLoginDetails == null) {
-            throw new ApplicationException(ErrorType.LOGIN_FAILED);
-        }
-        try {
-            String token = JWTUtils.createJWT(successfulLoginDetails);
-            return token;
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorType.GENERAL_ERROR, "Failed to login", e);
-        }
     }
 
     private void validateUser(User user) throws ApplicationException {

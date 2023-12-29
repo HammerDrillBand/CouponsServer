@@ -3,6 +3,7 @@ package com.oleg.coupons.enums;
 public enum ErrorType {
     GENERAL_ERROR(800, "An error has occurred while running", true),
     COULD_NOT_FIND(801, "Could not find requested item/s", false),
+    UNAUTHORIZED_REQUEST(802, "You are unauthorized to perform this task", false),
 
     USER_PASSWORD_INVALID(810, "The password entered is invalid", false),
     USER_TYPE_NULL(811, "user type is not defined", false),
